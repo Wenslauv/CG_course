@@ -5,7 +5,6 @@
 
 void line(int x0, int y0, int x1, int y1, TGAImage& image, const TGAColor& color)
 {
-    
     bool transpose = false;
     if (std::abs(x0-x1) < std::abs(y0-y1)) {
         std::swap(x0, y0);
@@ -18,9 +17,9 @@ void line(int x0, int y0, int x1, int y1, TGAImage& image, const TGAColor& color
         std::swap(y0, y1);
     }
     
-    int dx = x0 - x1;
-    int dy = y0 - y1;
-    int delta_e = std::abs(dy) * 2;
+    const int dx = x1 - x0;
+    const int dy = y1 - y0;
+    const int delta_e = std::abs(dy) * 2;
     int error = 0;
     int y = y0;
     for (int x = x0; x <= x1; ++x) {
