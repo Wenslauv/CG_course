@@ -81,7 +81,7 @@ void draw_triangle( const Vector2i& v0,
         if (A.x > B.x) 
             std::swap(A, B);
         for (int x = A.x; x <= B.x; ++x)  {
-            image.set(x, rv0.y + y, TGAColor(255, 0,   0,   255));
+            image.set(x, rv0.y + y, color);
         } 
     }
 }
