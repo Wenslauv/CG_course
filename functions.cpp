@@ -36,3 +36,21 @@ void line(int x0, int y0, int x1, int y1, TGAImage& image, const TGAColor& color
     }
     
 }
+
+void line( const Vector2i& v0, const Vector2i& v1, TGAImage& image, const TGAColor& color ) 
+{
+    line(v0.x, v0.y, v1.x, v1.y, image, color);
+}
+
+
+
+void draw_triangle( const Vector2i& v0, 
+                    const Vector2i& v1, 
+                    const Vector2i& v2, 
+                    TGAImage& image, 
+                    const TGAColor& color) 
+{
+    line(v0, v1, image, color);
+    line(v1, v2, image, color);
+    line(v0, v2, image, color);
+}
