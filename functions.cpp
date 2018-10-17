@@ -52,6 +52,9 @@ void draw_triangle( const Vector2i& v0,
                     TGAImage& image, 
                     const TGAColor& color) 
 {
+    if (v0.y == v1.y && v1.y == v2.y) 
+        return;
+
     std::vector<Vector2i> vertices{v0, v1, v2};
     std::sort(vertices.begin(), vertices.end(), [](const Vector2i& l, const Vector2i& r) { return l.y < r.y; });
 
@@ -59,31 +62,26 @@ void draw_triangle( const Vector2i& v0,
     const auto& rv1 = vertices[1];
     const auto& rv2 = vertices[2];
     const int height = rv2.y - rv0.y;
+
     
+    for( int y = 0; y < height; ++y) {
+        const bool is_second_half = y > rv1.y - rv0.y || rv1.y == rv0.y;
+        const int segment_height = is_second_half 
+            ? rv2.y - rv1.y + 1
+            : rv1.y - rv0.y + 1;
 
-    int segment_height = rv1.y-rv0.y + 1;
-    for( int y = rv0.y; y <= rv1.y; ++y) {
-        const float alpha = static_cast<float>(y - rv0.y) / height;
-        const float beta = static_cast<float>(y - rv0.y) / segment_height;
+        const float alpha = static_cast<float>(y) / height;
+        const float beta = static_cast<float>(y - (is_second_half ? rv1.y - rv0.y :  0)) / segment_height;
 
         Vector2i A = rv0 + (rv2 - rv0)* alpha;
-        Vector2i B = rv0 + (rv1 - rv0) * beta;
-        if (A.x > B.x) std::swap(A, B);
+        Vector2i B = is_second_half 
+            ? rv1 + (rv2 - rv1) * beta
+            : rv0 + (rv1 - rv0) * beta;
+
+        if (A.x > B.x) 
+            std::swap(A, B);
         for (int x = A.x; x <= B.x; ++x)  {
-            image.set(x, y, TGAColor(255, 0,   0,   255));
+            image.set(x, rv0.y + y, TGAColor(255, 0,   0,   255));
         } 
-    }
-
-    segment_height = rv2.y - rv1.y + 1;
-    for(int y = rv1.y; y <= rv2.y; ++y) {
-        const float alpha = static_cast<float>(y - rv0.y) / height;
-        const float beta = static_cast<float>(y - rv1.y) / segment_height;
-
-        Vector2i A = rv0 + (rv2 - rv0)* alpha;
-        Vector2i B = rv1 + (rv2 - rv1) * beta;
-        if (A.x > B.x) std::swap(A, B);
-        for (int x = A.x; x <= B.x; ++x)  {
-            image.set(x, y, TGAColor(255, 0,   0,   255));
-        }
     }
 }
