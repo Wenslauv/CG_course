@@ -61,6 +61,20 @@ struct Vector3
         return x * V.x + y * V.y + z * V.z;
     }
     
+    inline Vector3<T> operator ^ (const Vector3<T>& v) const {
+        return Vector3<T>(y*v.z-z*v.y, z*v.x-x*v.z, x*v.y-y*v.x);  
+    }
+
+    float norm() const {
+        return std::sqrt(x*x + y*y + z*z);
+    }
+
+    Vector3<T>& normalize(T len=1) {
+        *this = (*this) * ( len / norm());
+        return *this;
+    }
+
+
     float length() const {
         return std::sqrt(x*x + y*y + z*z);
     }

@@ -32,25 +32,35 @@ int main(int argc, char** argv) {
 
 
 	const int count = model->faces_count();
+	const Vector3f light(0,0,-1);
+
 	for(int i = 0; i < count; ++i) {
 		const auto face = model->get_face(i);
 		std::vector<Vector2i> screen_coords(3);
+		std::vector<Vector3f> world_coords(3);
 
 		for(int j =0; j < 3; ++j) {
-			const auto world_coords = model->get_vertice(face[j]);
-			screen_coords[j] = Vector2i( (world_coords.x + 1.0) * width / 2.0, 
-										 (world_coords.y + 1.0) * height / 2.0);
+			const auto wc = model->get_vertice(face[j]);
+			screen_coords[j] = Vector2i( (wc.x + 1.0) * width / 2.0, 
+										 (wc.y + 1.0) * height / 2.0);
+			world_coords[j] = wc;
 		}
 
-		draw_triangle(	screen_coords[0], 
-						screen_coords[1], 
-						screen_coords[2], 
-						image, 
-						TGAColor(rand()%255, rand()%255, rand()%255, 255)
-		);
+		auto normal = (world_coords[2] - world_coords[1]) ^ (world_coords[1] - world_coords[0]);
+		normal.normalize();
+
+		const float intensity = normal * light;
+		if (intensity > 0) {
+			draw_triangle(	screen_coords[0], 
+							screen_coords[1], 
+							screen_coords[2], 
+							image, 
+							TGAColor(255*intensity, 255*intensity, 255*intensity, 255)
+			);
+		}
 	}
 
-	image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
+	image.flip_vertically();
 	image.write_tga_file("output.tga");
 	return 0;
 }
