@@ -1,6 +1,8 @@
 #include "functions.h"
 
 #include <cmath>
+#include <vector>
+#include <algorithm>
 
 
 void line(int x0, int y0, int x1, int y1, TGAImage& image, const TGAColor& color)
@@ -50,7 +52,38 @@ void draw_triangle( const Vector2i& v0,
                     TGAImage& image, 
                     const TGAColor& color) 
 {
-    line(v0, v1, image, color);
-    line(v1, v2, image, color);
-    line(v0, v2, image, color);
+    std::vector<Vector2i> vertices{v0, v1, v2};
+    std::sort(vertices.begin(), vertices.end(), [](const Vector2i& l, const Vector2i& r) { return l.y < r.y; });
+
+    const auto& rv0 = vertices[0];
+    const auto& rv1 = vertices[1];
+    const auto& rv2 = vertices[2];
+    const int height = rv2.y - rv0.y;
+    
+
+    int segment_height = rv1.y-rv0.y + 1;
+    for( int y = rv0.y; y <= rv1.y; ++y) {
+        const float alpha = static_cast<float>(y - rv0.y) / height;
+        const float beta = static_cast<float>(y - rv0.y) / segment_height;
+
+        Vector2i A = rv0 + (rv2 - rv0)* alpha;
+        Vector2i B = rv0 + (rv1 - rv0) * beta;
+        if (A.x > B.x) std::swap(A, B);
+        for (int x = A.x; x <= B.x; ++x)  {
+            image.set(x, y, TGAColor(255, 0,   0,   255));
+        } 
+    }
+
+    segment_height = rv2.y - rv1.y + 1;
+    for(int y = rv1.y; y <= rv2.y; ++y) {
+        const float alpha = static_cast<float>(y - rv0.y) / height;
+        const float beta = static_cast<float>(y - rv1.y) / segment_height;
+
+        Vector2i A = rv0 + (rv2 - rv0)* alpha;
+        Vector2i B = rv1 + (rv2 - rv1) * beta;
+        if (A.x > B.x) std::swap(A, B);
+        for (int x = A.x; x <= B.x; ++x)  {
+            image.set(x, y, TGAColor(255, 0,   0,   255));
+        }
+    }
 }
