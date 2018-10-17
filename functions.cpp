@@ -67,8 +67,8 @@ void draw_triangle( const Vector2i& v0,
     for( int y = 0; y < height; ++y) {
         const bool is_second_half = y > rv1.y - rv0.y || rv1.y == rv0.y;
         const int segment_height = is_second_half 
-            ? rv2.y - rv1.y + 1
-            : rv1.y - rv0.y + 1;
+            ? rv2.y - rv1.y
+            : rv1.y - rv0.y;
 
         const float alpha = static_cast<float>(y) / height;
         const float beta = static_cast<float>(y - (is_second_half ? rv1.y - rv0.y :  0)) / segment_height;
