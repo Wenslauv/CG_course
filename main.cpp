@@ -5,11 +5,14 @@
 #include "model.h"
 
 #include <memory>
+#include <limits>
 
 
 const TGAColor white = TGAColor(255, 255, 255, 255);
 const TGAColor red   = TGAColor(255, 0,   0,   255);
 const TGAColor green = TGAColor(0,   255, 0,   255);
+const TGAColor blue  = TGAColor(0,   0,   255, 255); 
+
 const int width = 800;
 const int height = 800;
 
@@ -58,6 +61,19 @@ int main(int argc, char** argv) {
 							TGAColor(255*intensity, 255*intensity, 255*intensity, 255)
 			);
 		}
+	}
+
+	{
+		TGAImage y_buffer_image(width, 16, TGAImage::RGB);
+
+		std::vector<int> y_buffer(width, std::numeric_limits<int>::min());
+
+
+		rasterize(Vector2i(20, 34),   Vector2i(744, 400), y_buffer_image, red,   y_buffer);
+        rasterize(Vector2i(120, 434), Vector2i(444, 400), y_buffer_image, green, y_buffer);
+        rasterize(Vector2i(330, 463), Vector2i(594, 200), y_buffer_image, blue,  y_buffer);
+
+		y_buffer_image.write_tga_file("y_buffer.tga");
 	}
 
 	image.flip_vertically();

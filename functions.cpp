@@ -85,3 +85,25 @@ void draw_triangle( const Vector2i& v0,
         } 
     }
 }
+
+
+void rasterize( Vector2i v0,
+                Vector2i v1, 
+                TGAImage& image,
+                const TGAColor& color,
+                std::vector<int>& ybuffer)
+{
+    if (v0.x > v1.x) 
+        std::swap(v0, v1);
+
+    const auto size = static_cast<float>(v1.x - v0.x);
+    for (int i = v0.x; i <= v1.x; ++i) {
+        const float delta = ( i - v0.x) / size;
+        const int y = v0.y * (1 - delta) + v1.y * delta;
+        
+        if (ybuffer[i] < y) {
+            ybuffer[i] = y;
+            image.set(i, 0, color);
+        }
+    }   
+}
