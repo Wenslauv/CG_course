@@ -57,12 +57,12 @@ int main(int argc, char** argv) {
 		const float intensity = normal * light;
 		if (intensity > 0) {
 			triangle(	screen_coords[0], 
-							screen_coords[1], 
-							screen_coords[2], 
-							image, 
-							TGAColor(255*intensity, 255*intensity, 255*intensity, 255),
-							z_buffer,
-							width
+						screen_coords[1], 
+						screen_coords[2], 
+						image, 
+						TGAColor(255*intensity, 255*intensity, 255*intensity, 255),
+						z_buffer,
+						width
 			);
 		}
 	}
