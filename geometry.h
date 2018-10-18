@@ -44,6 +44,9 @@ struct Vector3
     
     Vector3() : x(0), y(0), z(0) {}
     Vector3(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
+
+    template<typename U>
+    Vector3<T>(const Vector3<U>& v) : x(v.x), y(v.y), z(v.z) {}
     
     inline Vector3<T> operator + (const Vector3<T>& V) const {
         return Vector3<T>(x + V.x, y + V.y, z + V.z);

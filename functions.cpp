@@ -87,6 +87,60 @@ void draw_triangle( const Vector2i& v0,
 }
 
 
+void triangle(  Vector3i p0, 
+                Vector3i p1, 
+                Vector3i p2, 
+                TGAImage& image, 
+                const TGAColor& color,
+                std::vector<int>& zbuff,
+                int width)
+{
+    if (p0.y == p1.y && p1.y == p2.y) 
+        return;
+
+    if (p0.y > p1.y) std::swap(p0, p1);
+    if (p0.y > p2.y) std::swap(p0, p2);
+    if (p1.y > p2.y) std::swap(p1, p2);
+
+
+    const int height = p2.y - p0.y;
+
+    
+    for( int y = 0; y < height; ++y) {
+        const bool is_second_half = y > p1.y - p0.y || p1.y == p0.y;
+        const int segment_height = is_second_half 
+            ? p2.y - p1.y
+            : p1.y - p0.y;
+
+        const float alpha = static_cast<float>(y) / height;
+        const float beta = static_cast<float>(y - (is_second_half ? p1.y - p0.y :  0)) / segment_height;
+
+        Vector3i A = p0 + Vector3f(p2 - p0)* alpha;
+        Vector3i B = is_second_half 
+            ? p1 + Vector3f(p2 - p1) * beta
+            : p0 + Vector3f(p1 - p0) * beta;
+
+        if (A.x > B.x) 
+            std::swap(A, B);
+        const float s = static_cast<float>(B.x - A.x);
+        for (int x = A.x; x <= B.x; ++x)  {
+            const float phi = B.x == A.x 
+            ? 1.0
+            : static_cast<float>(x - A.x) / s;
+
+            const Vector3f P = Vector3f(A) + Vector3f(B-A) * phi; 
+            const int idx = P.x + P.y * width;
+
+            if (zbuff[idx] < P.z) {
+                zbuff[idx] = P.z;
+                image.set(P.x, P.y, color);
+            }
+        } 
+    }
+}
+
+
+
 void rasterize( Vector2i v0,
                 Vector2i v1, 
                 TGAImage& image,

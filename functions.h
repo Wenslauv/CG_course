@@ -16,6 +16,15 @@ void draw_triangle( const Vector2i& v0,
                     const TGAColor& color);
 
 
+void triangle(  Vector3i p0, 
+                Vector3i p1, 
+                Vector3i p2, 
+                TGAImage& image, 
+                const TGAColor& color,
+                std::vector<int>& zbuff,
+                int width);
+
+
 void rasterize( Vector2i v0,
                 Vector2i v1, 
                 TGAImage& image,
